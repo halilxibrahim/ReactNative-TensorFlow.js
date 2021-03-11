@@ -1,0 +1,34 @@
+language: android
+sudo: required
+jdk: oraclejdk8
+os: linux
+
+before_cache:
+ - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+ - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+ directories:
+ - $HOME/.yarn-cache
+ - $HOME/.gradle/caches/
+ - $HOME/.gradle/wrapper/
+
+before_install:
+ - nvm install 8
+ - node --version
+ - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+ - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+ - sudo apt-get update -qq
+ - sudo apt-get install -y -qq yarn
+install:
+ - yarn
+ - yarn add react-native
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-26.0.1
+    - android-23
+    - sys-img-armeabi-v7a-android-22
+script:
+  - cd android && ./gradlew assembleDebug
